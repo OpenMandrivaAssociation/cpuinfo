@@ -2,7 +2,7 @@
 %define version	1.0
 %define svndate	20070415
 %define rel	1
-%define release	%{?svndate:0.%{svndate}.}%{rel}
+%define release	%mkrel %{?svndate:0.%{svndate}.}%{rel}
 
 Summary:	A CPU identification tool and library
 Name:		%{name}
