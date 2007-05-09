@@ -26,6 +26,9 @@ Group:		System/Kernel and hardware
 Url:		http://gwenole.beauchesne.info/projects/cpuinfo/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64 mips
+%if %{build_perl}
+BuildRequires:	perl-devel
+%endif
 
 %description
 cpuinfo consists of an API/library used by programs to get information
