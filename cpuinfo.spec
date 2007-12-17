@@ -24,7 +24,6 @@ Patch0:		cpuinfo-1.0-mdvconfig.patch
 License:	GPL
 Group:		System/Kernel and hardware
 Url:		http://gwenole.beauchesne.info/projects/cpuinfo/
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64 mips
 %if %{build_perl}
 BuildRequires:	perl-devel
