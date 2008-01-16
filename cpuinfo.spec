@@ -104,5 +104,3 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{perl_vendorarch}/auto/Cpuinfo
 %{perl_vendorarch}/auto/Cpuinfo/*
 %endif
-
-%changelog
