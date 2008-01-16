@@ -1,6 +1,6 @@
 %define name	cpuinfo
 %define version	1.0
-%define svndate	20070509
+%define svndate	20070715
 %define rel	1
 %define release	%mkrel %{?svndate:0.%{svndate}.}%{rel}
 
