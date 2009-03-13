@@ -22,7 +22,7 @@ ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64
 BuildRequires:	perl-devel
 %endif
 %if %{with python}
-BuildRequires:	python-devel
+BuildRequires:	python-devel python-setuptools
 %endif
 
 %description
