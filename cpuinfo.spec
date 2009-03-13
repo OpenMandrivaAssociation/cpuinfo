@@ -1,33 +1,28 @@
-%define name	cpuinfo
-%define version	1.0
-%define svndate	20070715
-%define rel	1
-%define release	%mkrel %{?svndate:0.%{svndate}.}%{rel}
+%define svndate	20090313
+%define	major	1
+%define	libname	%mklibname %{name} %{major}
+%define	devname	%mklibname %{name} -d
 
-# Define to build shared libraries
-# XXX libify when API is declared stable and shared libs are enabled
-%define build_shared 0
-%{expand: %{?_with_shared:	%%global build_shared 1}}
-%{expand: %{?_without_shared:	%%global build_shared 0}}
-
-# Define to build perl bindings
-%define build_perl 1
-%{expand: %{?_with_perl:	%%global build_perl 1}}
-%{expand: %{?_without_perl:	%%global build_perl 0}}
+%bcond_without	perl
+%bcond_without	python
 
 Summary:	A CPU identification tool and library
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.bz2
-Patch0:		cpuinfo-1.0-mdvconfig.patch
-License:	GPL
+Name:		cpuinfo
+Version:	1.0
+Release:	%mkrel %{?svndate:0.%{svndate}.}1
+# based on branch at https://code.launchpad.net/cpuinfo/trunk, please don't
+# replace until merged upstream
+Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
+License:	GPLv2+
 Group:		System/Kernel and hardware
 Url:		http://gwenole.beauchesne.info/projects/cpuinfo/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64 mips
-%if %{build_perl}
+ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64
+%if %{with perl}
 BuildRequires:	perl-devel
+%endif
+%if %{with python}
+BuildRequires:	python-devel
 %endif
 
 %description
@@ -37,32 +32,49 @@ name, cache hierarchy, and supported features (e.g. CMP, SMT, and
 SIMD). cpuinfo is also a standalone program to demonstrate the use of
 this API.
 
-%package devel
+%package -n	%{libname}
+Summary:	Library for cpuinfo
+Group:		System/Libraries
+
+%description -n	%{libname}
+This package contains the library needed to run programs dynamically
+linked with cpuinfo.
+
+%package -n	%{devname}
 Summary:	Development files for cpuinfo
 Group:		Development/C
+Provides:	%{name}-devel = %{version}-%{release}
+Obsoletes:	%{name}-devel 
 
-%description devel
+%description -n	%{devname}
 This package contains headers and libraries needed to use cpuinfo's
 processor characterisation features in your programs.
 
-%package -n perl-Cpuinfo
+%package -n	perl-Cpuinfo
 Summary:	Perl bindings for cpuinfo
 Group:		Development/Perl
 
-%description -n perl-Cpuinfo
+%description -n	perl-Cpuinfo
 Provides a Perl API to the cpuinfo library.
+
+%package -n	python-cpuinfo
+Summary:	Python bindings for cpuinfo
+Group:		Development/Perl
+
+%description -n python-cpuinfo
+Provides a Python API to the cpuinfo library.
 
 %prep
 %setup -q
-%patch0 -p1 -b .mdvconfig
 
 %build
 %configure \
-%if %{build_shared}
 	--enable-shared \
+%if %{with perl}
+	--enable-perl=vendor \
 %endif
-%if %{build_perl}
-	--enable-perl \
+%if %{with python}
+	--enable-python \
 %endif
 	--install-sdk
 %make
@@ -84,23 +96,31 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc README COPYING NEWS
 %{_bindir}/cpuinfo
-%if %{build_shared}
-%{_libdir}/libcpuinfo.so.*
-%endif
 
-%files devel
+%files -n %{libname}
+%defattr(-,root,root)
+%{_libdir}/libcpuinfo.so.%{major}*
+
+%files -n %{devname}
 %defattr(-,root,root)
 %{_includedir}/cpuinfo.h
 %{_libdir}/libcpuinfo.a
-%if %{build_shared}
+%{_libdir}/pkgconfig/libcpuinfo.pc
 %{_libdir}/libcpuinfo.so
-%endif
 
-%if %{build_perl}
+%if %{with perl}
 %files -n perl-Cpuinfo
 %defattr(-,root,root)
 %doc src/bindings/perl/cpuinfo.pl
 %{perl_vendorarch}/Cpuinfo.pm
 %dir %{perl_vendorarch}/auto/Cpuinfo
 %{perl_vendorarch}/auto/Cpuinfo/*
+%endif
+
+%if %{with python}
+%files -n python-cpuinfo
+%defattr(-,root,root)
+%{python_sitearch}/CPUInfo.so
+%dir %{python_sitearch}/pycpuinfo-*.egg-info/
+%{python_sitearch}/pycpuinfo-*.egg-info/*
 %endif
