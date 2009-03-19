@@ -9,10 +9,13 @@
 Summary:	A CPU identification tool and library
 Name:		cpuinfo
 Version:	1.0
-Release:	%mkrel %{?svndate:0.%{svndate}.}1
+Release:	%mkrel %{?svndate:0.%{svndate}.}2
 # based on branch at https://code.launchpad.net/cpuinfo/trunk, please don't
 # replace until merged upstream
 Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
+# This patch is already commited to branch above, patch added here in stead of
+# updating tarball for just one commit..
+Patch500:	cpuinfo-1.0-no-64bit-if-32bit-personality.patch
 License:	GPLv2+
 Group:		System/Kernel and hardware
 Url:		http://gwenole.beauchesne.info/projects/cpuinfo/
@@ -66,6 +69,7 @@ Provides a Python API to the cpuinfo library.
 
 %prep
 %setup -q
+%patch0 -p0 -b .no64bit_if_32bit~
 
 %build
 %configure \
