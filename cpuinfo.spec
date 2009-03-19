@@ -69,7 +69,7 @@ Provides a Python API to the cpuinfo library.
 
 %prep
 %setup -q
-%patch0 -p0 -b .no64bit_if_32bit~
+%patch500 -p0 -b .no64bit_if_32bit~
 
 %build
 %configure \
