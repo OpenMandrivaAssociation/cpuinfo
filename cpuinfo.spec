@@ -47,7 +47,8 @@ linked with cpuinfo.
 Summary:	Development files for cpuinfo
 Group:		Development/C
 Provides:	%{name}-devel = %{version}-%{release}
-Obsoletes:	%{name}-devel 
+Obsoletes:	%{name}-devel
+Requires:	%{libname} = %{version}-%{release}
 
 %description -n	%{devname}
 This package contains headers and libraries needed to use cpuinfo's
