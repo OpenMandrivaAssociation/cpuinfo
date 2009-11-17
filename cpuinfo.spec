@@ -2,6 +2,7 @@
 %define	major	1
 %define	libname	%mklibname %{name} %{major}
 %define	devname	%mklibname %{name} -d
+%define	static	%mklibname %{name} -d -s
 
 %bcond_without	perl
 %bcond_without	python
@@ -54,6 +55,16 @@ Requires:	%{libname} = %{version}-%{release}
 
 %description -n	%{devname}
 This package contains headers and libraries needed to use cpuinfo's
+processor characterisation features in your programs.
+
+%package -n	%{static}
+Summary:	Static library for cpuinfo
+Group:		Development/C
+Provides:	%{name}-static-devel = %{version}-%{release}
+Requires:       %{devname} = %{version}-%{release}
+
+%description -n	%{static}
+This package contains static libraries needed to statically link cpuinfo's
 processor characterisation features in your programs.
 
 %package -n	perl-Cpuinfo
@@ -112,9 +123,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n %{devname}
 %defattr(-,root,root)
 %{_includedir}/cpuinfo.h
-%{_libdir}/libcpuinfo.a
 %{_libdir}/pkgconfig/libcpuinfo.pc
 %{_libdir}/libcpuinfo.so
+
+%files -n %{static}
+%defattr(-,root,root)
+%{_libdir}/libcpuinfo.a
 
 %if %{with perl}
 %files -n perl-Cpuinfo
