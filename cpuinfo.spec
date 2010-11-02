@@ -67,19 +67,23 @@ Requires:       %{devname} = %{version}-%{release}
 This package contains static libraries needed to statically link cpuinfo's
 processor characterisation features in your programs.
 
+%if %{with perl}
 %package -n	perl-Cpuinfo
 Summary:	Perl bindings for cpuinfo
 Group:		Development/Perl
 
 %description -n	perl-Cpuinfo
 Provides a Perl API to the cpuinfo library.
+%endif
 
+%if %{with python}
 %package -n	python-cpuinfo
 Summary:	Python bindings for cpuinfo
 Group:		Development/Perl
 
 %description -n python-cpuinfo
 Provides a Python API to the cpuinfo library.
+%endif
 
 %prep
 %setup -q
