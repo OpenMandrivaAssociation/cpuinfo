@@ -1,4 +1,4 @@
-%define svndate	20090313
+%define svndate	20110325
 %define	major	1
 %define	libname	%mklibname %{name} %{major}
 %define	devname	%mklibname %{name} -d
@@ -10,15 +10,10 @@
 Summary:	A CPU identification tool and library
 Name:		cpuinfo
 Version:	1.0
-Release:	%mkrel %{?svndate:0.%{svndate}.}7
+Release:	%{?svndate:0.%{svndate}.}1
 # based on branch at https://code.launchpad.net/cpuinfo/trunk, please don't
 # replace until merged upstream
 Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
-# This patch is already commited to branch above, patch added here in stead of
-# updating tarball for just one commit..
-Patch500:	cpuinfo-1.0-no-64bit-if-32bit-personality.patch
-# lame workaround for now..
-Patch501:	cpuinfo-1.0-dont-report-64bit-on-32bit.patch
 License:	GPLv2+
 Group:		System/Kernel and hardware
 Url:		http://gwenole.beauchesne.info/projects/cpuinfo/
@@ -87,8 +82,6 @@ Provides a Python API to the cpuinfo library.
 
 %prep
 %setup -q
-%patch500 -p0 -b .no64bit_if_32bit_personality~
-%patch501 -p0 -b .no64bit_if_32bit~
 
 %build
 %configure \
