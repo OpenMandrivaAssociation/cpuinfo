@@ -93,7 +93,7 @@ Provides a Python API to the cpuinfo library.
 	--enable-python \
 %endif
 	--install-sdk
-%make
+LDFLAGS="%{ldflags}" %make
 
 %install
 rm -rf $RPM_BUILD_ROOT
