@@ -97,9 +97,9 @@ LDFLAGS="%{ldflags}" %make
 %makeinstall_std
 
 # nuke unpackaged files
-find $RPM_BUILD_ROOT -name cpuinfo.pl -exec rm -f {} \;
-find $RPM_BUILD_ROOT -name perllocal.pod -exec rm -f {} \;
-find $RPM_BUILD_ROOT -name .packlist -exec rm -f {} \;
+find %{buildroot} -name cpuinfo.pl -exec rm -f {} \;
+find %{buildroot} -name perllocal.pod -exec rm -f {} \;
+find %{buildroot} -name .packlist -exec rm -f {} \;
 
 %files
 %doc README COPYING NEWS
