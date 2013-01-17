@@ -134,7 +134,7 @@ find $RPM_BUILD_ROOT -name .packlist -exec rm -f {} \;
 
 
 %changelog
-* Thu Jan 17 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.4
+* Thu Jan 17 2013 Per Ã˜yvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.4
 - replace python-devel with pkgconfig(python2) for buildrequires
 
 * Fri Mar 25 2011 Per Ã˜yvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.1
@@ -204,7 +204,7 @@ find $RPM_BUILD_ROOT -name .packlist -exec rm -f {} \;
 - initial mandriva linux package
 
 
-* Tue Feb 14 2006 Nicolas Lécureuil <neoclust@mandriva.org> 0.3-3mdk
+* Tue Feb 14 2006 Nicolas LÃ©cureuil <neoclust@mandriva.org> 0.3-3mdk
 - Fix BuildRequires
 
 * Sat Feb 11 2006 Sebastien Savarin <plouf@mandriva.org> 0.3-2mdk
