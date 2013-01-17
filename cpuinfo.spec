@@ -96,6 +96,10 @@ LDFLAGS="%{ldflags}" %make
 %install
 %makeinstall_std
 
+mkdir %{buildroot}/%{_lib}
+mv %{buildroot}%{_libdir}/libcpuinfo.so.%{major}* %{buildroot}/%{_lib}
+ln -srf %{buildroot}/%{_lib}/libcpuinfo.so.%{major}.*.* %{buildroot}%{_libdir}/libcpuinfo.so
+
 # nuke unpackaged files
 find $RPM_BUILD_ROOT -name cpuinfo.pl -exec rm -f {} \;
 find $RPM_BUILD_ROOT -name perllocal.pod -exec rm -f {} \;
@@ -107,7 +111,7 @@ find $RPM_BUILD_ROOT -name .packlist -exec rm -f {} \;
 
 %files -n %{libname}
 %defattr(-,root,root)
-%{_libdir}/libcpuinfo.so.%{major}*
+/%{_lib}/libcpuinfo.so.%{major}*
 
 %files -n %{devname}
 %{_includedir}/cpuinfo.h
@@ -135,6 +139,7 @@ find $RPM_BUILD_ROOT -name .packlist -exec rm -f {} \;
 
 %changelog
 * Thu Jan 17 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.4
+- move library to /%%{_lib} as it's required by /bin/rpm
 - replace python-devel with pkgconfig(python2) for buildrequires
 
 * Fri Mar 25 2011 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.1
