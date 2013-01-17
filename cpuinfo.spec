@@ -102,8 +102,6 @@ ln -srf %{buildroot}/%{_lib}/libcpuinfo.so.%{major}.*.* %{buildroot}%{_libdir}/l
 
 # nuke unpackaged files
 find $RPM_BUILD_ROOT -name cpuinfo.pl -exec rm -f {} \;
-find $RPM_BUILD_ROOT -name perllocal.pod -exec rm -f {} \;
-find $RPM_BUILD_ROOT -name .packlist -exec rm -f {} \;
 
 %files
 %doc README COPYING NEWS
@@ -136,9 +134,9 @@ find $RPM_BUILD_ROOT -name .packlist -exec rm -f {} \;
 %{python_sitearch}/pycpuinfo-*.egg-info/*
 %endif
 
-
 %changelog
 * Thu Jan 17 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.4
+- don't nuke files that gets automatically nuked..
 - move library to /%%{_lib} as it's required by /bin/rpm
 - replace python-devel with pkgconfig(python2) for buildrequires
 
