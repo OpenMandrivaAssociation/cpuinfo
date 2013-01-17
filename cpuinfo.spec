@@ -35,6 +35,7 @@ this API.
 %package -n	%{libname}
 Summary:	Library for cpuinfo
 Group:		System/Libraries
+License:	LGPLv2.1+
 
 %description -n	%{libname}
 This package contains the library needed to run programs dynamically
@@ -43,6 +44,7 @@ linked with cpuinfo.
 %package -n	%{devname}
 Summary:	Development files for cpuinfo
 Group:		Development/C
+License:	LGPLv2.1+
 Requires:	%{libname} = %{version}-%{release}
 %rename		%{name}-devel
 
@@ -53,6 +55,7 @@ processor characterisation features in your programs.
 %package -n	%{static}
 Summary:	Static library for cpuinfo
 Group:		Development/C
+License:	LGPLv2.1+
 Provides:	%{name}-static-devel = %{version}-%{release}
 Requires:       %{devname} = %{version}-%{release}
 
@@ -64,6 +67,7 @@ processor characterisation features in your programs.
 %package -n	perl-Cpuinfo
 Summary:	Perl bindings for cpuinfo
 Group:		Development/Perl
+License:	GPLv2+
 
 %description -n	perl-Cpuinfo
 Provides a Perl API to the cpuinfo library.
@@ -73,6 +77,7 @@ Provides a Perl API to the cpuinfo library.
 %package -n	python-cpuinfo
 Summary:	Python bindings for cpuinfo
 Group:		Development/Perl
+License:	GPLv2+
 
 %description -n python-cpuinfo
 Provides a Python API to the cpuinfo library.
@@ -104,7 +109,7 @@ ln -srf %{buildroot}/%{_lib}/libcpuinfo.so.%{major}.*.* %{buildroot}%{_libdir}/l
 find $RPM_BUILD_ROOT -name cpuinfo.pl -exec rm -f {} \;
 
 %files
-%doc README COPYING NEWS
+%doc README NEWS
 %{_bindir}/cpuinfo
 
 %files -n %{libname}
@@ -136,6 +141,7 @@ find $RPM_BUILD_ROOT -name cpuinfo.pl -exec rm -f {} \;
 
 %changelog
 * Thu Jan 17 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.4
+- fix license
 - don't nuke files that gets automatically nuked..
 - move library to /%%{_lib} as it's required by /bin/rpm
 - replace python-devel with pkgconfig(python2) for buildrequires
