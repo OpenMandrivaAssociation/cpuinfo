@@ -10,7 +10,7 @@
 Summary:	A CPU identification tool and library
 Name:		cpuinfo
 Version:	1.0
-Release:	%{?svndate:0.%{svndate}.}3
+Release:	%{?svndate:0.%{svndate}.}4
 # based on branch at https://code.launchpad.net/cpuinfo/trunk, please don't
 # replace until merged upstream
 Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
@@ -22,7 +22,7 @@ ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64
 BuildRequires:	perl-devel
 %endif
 %if %{with python}
-BuildRequires:	python-devel python-setuptools
+BuildRequires:	pkgconfig(python2) python-setuptools
 %endif
 
 %description
@@ -134,6 +134,9 @@ find $RPM_BUILD_ROOT -name .packlist -exec rm -f {} \;
 
 
 %changelog
+* Thu Jan 17 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.4
+- replace python-devel with pkgconfig(python2) for buildrequires
+
 * Fri Mar 25 2011 Per Ã˜yvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.1
 + Revision: 648432
 - clean out old junk
