@@ -22,7 +22,8 @@ ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64
 BuildRequires:	perl-devel
 %endif
 %if %{with python}
-BuildRequires:	pkgconfig(python2) python-setuptools
+BuildRequires:	pkgconfig(python2)
+BuildRequires:	python-setuptools
 %endif
 
 %description
@@ -106,14 +107,13 @@ mv %{buildroot}%{_libdir}/libcpuinfo.so.%{major}* %{buildroot}/%{_lib}
 ln -srf %{buildroot}/%{_lib}/libcpuinfo.so.%{major}.*.* %{buildroot}%{_libdir}/libcpuinfo.so
 
 # nuke unpackaged files
-find $RPM_BUILD_ROOT -name cpuinfo.pl -exec rm -f {} \;
+find %{buildroot} -name cpuinfo.pl -exec rm -f {} \;
 
 %files
 %doc README NEWS
 %{_bindir}/cpuinfo
 
 %files -n %{libname}
-%defattr(-,root,root)
 /%{_lib}/libcpuinfo.so.%{major}*
 
 %files -n %{devname}
@@ -138,87 +138,4 @@ find $RPM_BUILD_ROOT -name cpuinfo.pl -exec rm -f {} \;
 %dir %{python_sitearch}/pycpuinfo-*.egg-info/
 %{python_sitearch}/pycpuinfo-*.egg-info/*
 %endif
-
-%changelog
-* Thu Jan 17 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.4
-- fix license
-- don't nuke files that gets automatically nuked..
-- move library to /%%{_lib} as it's required by /bin/rpm
-- replace python-devel with pkgconfig(python2) for buildrequires
-
-* Fri Mar 25 2011 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20110325.1
-+ Revision: 648432
-- clean out old junk
-- link with %%{ldflags}
-- new snapshot
-
-* Mon Nov 08 2010 Funda Wang <fwang@mandriva.org> 1.0-0.20090313.7mdv2011.0
-+ Revision: 595031
-- rebuild
-
-  + Per Øyvind Karlsen <peroyvind@mandriva.org>
-    - fix so that it's possible to build with perl or python bindings
-
-* Tue Nov 02 2010 Funda Wang <fwang@mandriva.org> 1.0-0.20090313.6mdv2011.0
-+ Revision: 592111
-- rebuild for py2.7
-
-* Wed Jul 21 2010 Jérôme Quelin <jquelin@mandriva.org> 1.0-0.20090313.5mdv2011.0
-+ Revision: 556337
-- rebuild for perl 5.12
-
-* Tue Nov 17 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20090313.4mdv2010.1
-+ Revision: 466991
-- split static library into a separate package
-- don't report 64 bit if built for 32 bit (P501)
-- add dependency on library package for devel package
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - rebuild
-
-* Thu Mar 19 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20090313.2mdv2009.1
-+ Revision: 357588
-- only report 64bit if PER_LINUX_32BIT personality isn't set (P0)
-
-* Fri Mar 13 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0-0.20090313.1mdv2009.1
-+ Revision: 354626
-- add missing buildrequires
-- build shared library, perl & python bindings
-- update copyright tag
-- cosmetics
-  update to snapshot from my own bzr branch:
-  	o adds python bindings
-  	o adds feature detection of ancient features all the way back to
-  	  'alignment check' to latest and greatest described in intel & amd manuals
-  	o several improvements for making it easier for rpm5 to use library
-
-* Thu Jan 17 2008 Olivier Blin <oblin@mandriva.com> 1.0-0.20070715.1mdv2008.1
-+ Revision: 153914
-- update to 20070715 snapshot
-- restore BuildRoot
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - kill re-definition of %%buildroot on Pixel's request
-
-* Wed May 09 2007 Gwenole Beauchesne <gbeauchesne@mandriva.org> 1.0-0.20070509.1mdv2008.0
-+ Revision: 25631
-- update from SVN (2007/05/09):
-  * add Perl bindings
-  * fix detection of VIA processors (C3, C7)
-  * fix detection of early AMD processors (K5, K6)
-  * add more x86 feature flags (3dnow, sse4, popcnt)
-
-* Wed Apr 18 2007 Gwenole Beauchesne <gbeauchesne@mandriva.org> 1.0-0.20070415.1mdv2008.0
-+ Revision: 14616
-- initial mandriva linux package
-
-
-* Tue Feb 14 2006 Nicolas Lécureuil <neoclust@mandriva.org> 0.3-3mdk
-- Fix BuildRequires
-
-* Sat Feb 11 2006 Sebastien Savarin <plouf@mandriva.org> 0.3-2mdk
-- Fix wrong perms
-
-* Sat Feb 11 2006 Sebastien Savarin <plouf@mandriva.org> 0.3-1mdk
-- First Mandriva Linux release
 
