@@ -1,16 +1,16 @@
-%define svndate	20110325
-%define	major	1
-%define	libname	%mklibname %{name} %{major}
-%define	devname	%mklibname %{name} -d
-%define	static	%mklibname %{name} -d -s
+%define svndate 20110325
+%define major 1
+%define libname %mklibname %{name} %{major}
+%define devname %mklibname %{name} -d
+%define static %mklibname %{name} -d -s
 
-%bcond_without	perl
-%bcond_without	python
+%bcond_without perl
+%bcond_without python
 
 Summary:	A CPU identification tool and library
 Name:		cpuinfo
 Version:	1.0
-Release:	%{?svndate:0.%{svndate}.}4
+Release:	%{?svndate:0.%{svndate}.}5
 # based on branch at https://code.launchpad.net/cpuinfo/trunk, please don't
 # replace until merged upstream
 Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
