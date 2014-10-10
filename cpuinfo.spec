@@ -10,7 +10,7 @@
 Summary:	A CPU identification tool and library
 Name:		cpuinfo
 Version:	1.0
-Release:	%{?svndate:0.%{svndate}.}6
+Release:	%{?svndate:0.%{svndate}.}7
 # based on branch at https://code.launchpad.net/cpuinfo/trunk, please don't
 # replace until merged upstream
 Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
@@ -97,6 +97,8 @@ Provides a Python API to the cpuinfo library.
 	--enable-python \
 %endif
 	--install-sdk
+sed -i 's|python|%{__python2}|g' Makefile
+
 LDFLAGS="%{ldflags}" %make
 
 %install
@@ -134,8 +136,8 @@ find %{buildroot} -name cpuinfo.pl -exec rm -f {} \;
 
 %if %{with python}
 %files -n python-cpuinfo
-%{python_sitearch}/CPUInfo.so
-%dir %{python_sitearch}/pycpuinfo-*.egg-info/
-%{python_sitearch}/pycpuinfo-*.egg-info/*
+%{py2_sitearch}/CPUInfo.so
+%dir %{py2_sitearch}/pycpuinfo-*.egg-info/
+%{py2_sitearch}/pycpuinfo-*.egg-info/*
 %endif
 
