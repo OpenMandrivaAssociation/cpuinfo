@@ -138,8 +138,8 @@ find %{buildroot} -name cpuinfo.pl -exec rm -f {} \;
 
 %if %{with python}
 %files -n python-cpuinfo
-%{py2_sitearch}/CPUInfo.so
-%dir %{py2_sitearch}/pycpuinfo-*.egg-info/
-%{py2_sitearch}/pycpuinfo-*.egg-info/*
+%{python2_sitearch}/CPUInfo.so
+%dir %{python2_sitearch}/pycpuinfo-*.egg-info/
+%{python2_sitearch}/pycpuinfo-*.egg-info/*
 %endif
 
