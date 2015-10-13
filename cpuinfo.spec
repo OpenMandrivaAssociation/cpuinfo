@@ -99,7 +99,7 @@ Provides a Python API to the cpuinfo library.
 	--enable-python \
 %endif
 	--install-sdk
-sed -i 's|python|%{__python2}|g' Makefile
+sed -i 's|python setup.py|%{__python2} setup.py|g' Makefile
 
 LDFLAGS="%{ldflags}" %make
 
