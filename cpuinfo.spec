@@ -25,7 +25,7 @@ BuildRequires:	perl-devel
 %endif
 %if %{with python}
 BuildRequires:	pkgconfig(python2)
-BuildRequires:	python-setuptools
+BuildRequires:	python2-setuptools
 %endif
 
 %description
