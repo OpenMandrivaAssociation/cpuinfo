@@ -4,6 +4,8 @@
 %define devname %mklibname %{name} -d
 %define static %mklibname %{name} -d -s
 
+%define _disable_lto 1
+
 %bcond_without perl
 %bcond_without python
 
