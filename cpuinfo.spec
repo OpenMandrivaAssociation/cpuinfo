@@ -12,7 +12,7 @@
 Summary:	A CPU identification tool and library
 Name:		cpuinfo
 Version:	1.0
-Release:	%{?svndate:0.%{svndate}.}7
+Release:	%{?svndate:0.%{svndate}.}8
 # based on branch at https://code.launchpad.net/cpuinfo/trunk, please don't
 # replace until merged upstream
 Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
