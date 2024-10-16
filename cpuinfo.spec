@@ -18,7 +18,7 @@ Release:	%{?svndate:0.%{svndate}.}8
 Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
 License:	GPLv2+
 Group:		System/Kernel and hardware
-Url:		http://gwenole.beauchesne.info/projects/cpuinfo/
+Url:		https://gwenole.beauchesne.info/projects/cpuinfo/
 ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64
 %if %{with perl}
 BuildRequires:	perl-devel
