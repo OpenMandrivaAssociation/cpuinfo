@@ -6,6 +6,7 @@ Version:        25.06.26
 Release:        1
 URL:            https://github.com/pytorch/%{name}
 Source0:        https://github.com/pytorch/cpuinfo/archive/refs/heads/cpuinfo-main.zip
+Patch0:         0001-cpuinfo-cmake-changes.patch
 
 ExclusiveArch:  x86_64 aarch64
 
