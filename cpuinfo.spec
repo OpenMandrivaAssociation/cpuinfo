@@ -99,7 +99,9 @@ rm -rf %{buildroot}/%{_libdir}/pkgconfig/gtest*
 %{_bindir}/isa-info
 %{_bindir}/cpu-info
 %{_bindir}/cache-info
+%ifarch x86_64
 %{_bindir}/cpuid-dump
+%endif
 
 %files -n %{libname}
 %{_libdir}/lib%{name}.so.*
