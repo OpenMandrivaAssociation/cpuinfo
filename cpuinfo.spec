@@ -1,50 +1,14 @@
-# depends on downloading googletest src directory, use mock --enable-network
-%bcond_with check
-
-# So pre releases can be tried
-%bcond_with gitcommit
-
-%if %{with gitcommit}
-# PyTorch 2.4+ has this error
-# .../pytorch/aten/src/ATen/cpu/Utils.cpp:38:34: error: ‘cpuinfo_has_x86_amx_tile’ was not declared in this scope; did you mean ‘cpuinfo_has_x86_mmx_plus’?
-#   38 |   return cpuinfo_initialize() && cpuinfo_has_x86_amx_tile();
-#      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~
-#      |                                  cpuinfo_has_x86_mmx_plus
-#
-# Pick a more recent cpuinfo
-%global commit0 1e83a2fdd3102f65c6f1fb602c1b320486218a99
-Version:        24.09.26
-%define patch_level 0
-
-%else
-
-# For PyTorch 2.5
-%global commit0 1e83a2fdd3102f65c6f1fb602c1b320486218a99
-Version:        24.09.26
-%define patch_level 2
-
-%endif
-
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
-
 Summary:        A library to detect information about host CPU
 Name:           cpuinfo
 License:        BSD-2-Clause
-Release:        %{patch_level}.git%{?shortcommit0}%{?dist}.1
-
-
+Version:        25.06.26
+Release:        1
 URL:            https://github.com/pytorch/%{name}
-Source0:        %{url}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
-# so version YY.M.D
-Patch0:         0001-cpuinfo-fedora-cmake-changes.patch
+Source0:        https://github.com/pytorch/cpuinfo/archive/refs/heads/cpuinfo-main.zip
 
 ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  cmake
-BuildRequires:  gcc-c++
-%if %{with check}
-BuildRequires:  gtest-devel
-%endif
 BuildRequires:  make
 
 %description
@@ -93,20 +57,15 @@ sed -i -e 's@cpuinfo_VERSION 23.11.04@cpuinfo_VERSION %{version}@' CMakeLists.tx
 
 %build
 %cmake \
-%if %{with check}
-    -DCPUINFO_BUILD_UNIT_TESTS=ON \
-%else
     -DCPUINFO_BUILD_UNIT_TESTS=OFF \
-%endif
     -DCPUINFO_BUILD_MOCK_TESTS=OFF \
     -DCPUINFO_BUILD_BENCHMARKS=OFF
 
-%cmake_build
+%make_build
 
 %install
-%cmake_install
+%make_install -C build
 
-%if %{with check}
 rm -rf %{buildroot}/%{_includedir}/gmock
 rm -rf %{buildroot}/%{_includedir}/gtest
 rm -rf %{buildroot}/%{_libdir}/cmake/GTest
@@ -114,12 +73,6 @@ rm -rf %{buildroot}/%{_libdir}/libgmock*
 rm -rf %{buildroot}/%{_libdir}/libgtest*
 rm -rf %{buildroot}/%{_libdir}/pkgconfig/gmock*
 rm -rf %{buildroot}/%{_libdir}/pkgconfig/gtest*
-%endif
-
-%check
-%if %{with check}
-%ctest
-%endif
 
 %files
 %license LICENSE
