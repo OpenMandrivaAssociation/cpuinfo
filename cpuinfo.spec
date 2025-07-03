@@ -1,3 +1,6 @@
+%define libname %mklibname %{name}
+%define devname %mklibname %{name} -d
+
 Summary:        A library to detect information about host CPU
 Name:           cpuinfo
 License:        BSD-2-Clause
@@ -8,10 +11,10 @@ URL:            https://github.com/pytorch/%{name}
 Source0:        https://github.com/pytorch/cpuinfo/archive/refs/heads/cpuinfo-main.zip
 Patch0:         0001-cpuinfo-cmake-changes.patch
 
-ExclusiveArch:  x86_64 aarch64
-
 BuildRequires:  cmake
 BuildRequires:  make
+
+Requires: %{libname} = %{EVRD}
 
 %description
 cpuinfo is a library to detect essential for performance
@@ -43,13 +46,28 @@ Features
   * Supports systems with heterogenous cores, such as big.LITTLE and Max.Med.Min
 * Permissive open-source license (Simplified BSD)
 
-%package devel
-Summary:        Headers and libraries for cpuinfo
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+%package -n	%{libname}
+Summary:	Library for cpuinfo
+Group:		System/Libraries
+License:	BSD-2-Clause
+Requires: %{name} = %{EVRD}
 
-%description devel
-This package contains the developement libraries and headers
-for cpuinfo.
+%description -n	%{libname}
+This package contains the library needed to run programs dynamically
+linked with cpuinfo.
+
+%package -n	%{devname}
+Summary:	Development files for cpuinfo
+Group:		Development/C
+License:	BSD-2-Clause
+%rename		%{name}-devel
+Requires: %{name} = %{EVRD}
+Requires: %{libname} = %{EVRD}
+
+%description -n	%{devname}
+This package contains headers and libraries needed to use cpuinfo's
+processor characterisation features in your programs.
+
 
 %prep
 %autosetup -p1 -n %{name}-main
@@ -82,9 +100,11 @@ rm -rf %{buildroot}/%{_libdir}/pkgconfig/gtest*
 %{_bindir}/cpu-info
 %{_bindir}/cache-info
 %{_bindir}/cpuid-dump
-#{_libdir}/lib%{name}.so.*
 
-%files devel
+%files -n %{libname}
+%{_libdir}/lib%{name}.so.*
+
+%files -n %{devname}
 %doc README.md
 %dir %{_datadir}/%{name}
 %{_includedir}/%{name}.h
