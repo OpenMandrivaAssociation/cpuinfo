@@ -51,10 +51,10 @@ This package contains the developement libraries and headers
 for cpuinfo.
 
 %prep
-%autosetup -p1 -n %{name}-%{commit0}
+%autosetup -p1 -n %{name}-main
 
 # Patch the version patch
-sed -i -e 's@cpuinfo_VERSION 23.11.04@cpuinfo_VERSION %{version}@' CMakeLists.txt
+#sed -i -e 's@cpuinfo_VERSION 23.11.04@cpuinfo_VERSION %{version}@' CMakeLists.txt
 
 %build
 %cmake \
