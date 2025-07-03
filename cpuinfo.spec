@@ -1,145 +1,140 @@
-%define svndate 20110325
-%define major 1
-%define libname %mklibname %{name} %{major}
-%define devname %mklibname %{name} -d
-%define static %mklibname %{name} -d -s
+# depends on downloading googletest src directory, use mock --enable-network
+%bcond_with check
 
-%define _disable_lto 1
+# So pre releases can be tried
+%bcond_with gitcommit
 
-%bcond_without perl
-%bcond_without python
+%if %{with gitcommit}
+# PyTorch 2.4+ has this error
+# .../pytorch/aten/src/ATen/cpu/Utils.cpp:38:34: error: ‘cpuinfo_has_x86_amx_tile’ was not declared in this scope; did you mean ‘cpuinfo_has_x86_mmx_plus’?
+#   38 |   return cpuinfo_initialize() && cpuinfo_has_x86_amx_tile();
+#      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~
+#      |                                  cpuinfo_has_x86_mmx_plus
+#
+# Pick a more recent cpuinfo
+%global commit0 1e83a2fdd3102f65c6f1fb602c1b320486218a99
+Version:        24.09.26
+%define patch_level 0
 
-Summary:	A CPU identification tool and library
-Name:		cpuinfo
-Version:	1.0
-Release:	%{?svndate:0.%{svndate}.}8
-# based on branch at https://code.launchpad.net/cpuinfo/trunk, please don't
-# replace until merged upstream
-Source0:	%{name}-%{version}%{?svndate:-%{svndate}}.tar.xz
-License:	GPLv2+
-Group:		System/Kernel and hardware
-Url:		https://gwenole.beauchesne.info/projects/cpuinfo/
-ExclusiveArch:	%{ix86} x86_64 ppc ppc64 ia64
-%if %{with perl}
-BuildRequires:	perl-devel
+%else
+
+# For PyTorch 2.5
+%global commit0 1e83a2fdd3102f65c6f1fb602c1b320486218a99
+Version:        24.09.26
+%define patch_level 2
+
 %endif
-%if %{with python}
-BuildRequires:	pkgconfig(python2)
-BuildRequires:	python2-setuptools
+
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
+
+Summary:        A library to detect information about host CPU
+Name:           cpuinfo
+License:        BSD-2-Clause
+Release:        %{patch_level}.git%{?shortcommit0}%{?dist}.1
+
+
+URL:            https://github.com/pytorch/%{name}
+Source0:        %{url}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
+# so version YY.M.D
+Patch0:         0001-cpuinfo-fedora-cmake-changes.patch
+
+ExclusiveArch:  x86_64 aarch64
+
+BuildRequires:  cmake
+BuildRequires:  gcc-c++
+%if %{with check}
+BuildRequires:  gtest-devel
 %endif
+BuildRequires:  make
 
 %description
-cpuinfo consists of an API/library used by programs to get information
-about the underlying CPU. Such information includes CPU vendor, model
-name, cache hierarchy, and supported features (e.g. CMP, SMT, and
-SIMD). cpuinfo is also a standalone program to demonstrate the use of
-this API.
+cpuinfo is a library to detect essential for performance
+optimization information about host CPU.
 
-%package -n	%{libname}
-Summary:	Library for cpuinfo
-Group:		System/Libraries
-License:	LGPLv2.1+
+Features
+* Cross-platform availability:
+  * Linux, Windows, macOS, Android, and iOS operating systems
+  * x86, x86-64, ARM, and ARM64 architectures
+* Modern C/C++ interface
+  * Thread-safe
+  * No memory allocation after initialization
+  * No exceptions thrown
+* Detection of supported instruction sets, up to AVX512 (x86)
+  and ARMv8.3 extensions
+* Detection of SoC and core information:
+  * Processor (SoC) name
+  * Vendor and microarchitecture for each CPU core
+  * ID (MIDR on ARM, CPUID leaf 1 EAX value on x86) for each CPU core
+* Detection of cache information:
+  * Cache type (instruction/data/unified), size and line size
+  * Cache associativity
+  * Cores and logical processors (hyper-threads) sharing the cache
+* Detection of topology information (relative between logical
+  processors, cores, and processor packages)
+* Well-tested production-quality code:
+  * 60+ mock tests based on data from real devices
+  * Includes work-arounds for common bugs in hardware and OS kernels
+  * Supports systems with heterogenous cores, such as big.LITTLE and Max.Med.Min
+* Permissive open-source license (Simplified BSD)
 
-%description -n	%{libname}
-This package contains the library needed to run programs dynamically
-linked with cpuinfo.
+%package devel
+Summary:        Headers and libraries for cpuinfo
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%package -n	%{devname}
-Summary:	Development files for cpuinfo
-Group:		Development/C
-License:	LGPLv2.1+
-Requires:	%{libname} = %{version}-%{release}
-%rename		%{name}-devel
-
-%description -n	%{devname}
-This package contains headers and libraries needed to use cpuinfo's
-processor characterisation features in your programs.
-
-%package -n	%{static}
-Summary:	Static library for cpuinfo
-Group:		Development/C
-License:	LGPLv2.1+
-Provides:	%{name}-static-devel = %{version}-%{release}
-Requires:       %{devname} = %{version}-%{release}
-
-%description -n	%{static}
-This package contains static libraries needed to statically link cpuinfo's
-processor characterisation features in your programs.
-
-%if %{with perl}
-%package -n	perl-Cpuinfo
-Summary:	Perl bindings for cpuinfo
-Group:		Development/Perl
-License:	GPLv2+
-
-%description -n	perl-Cpuinfo
-Provides a Perl API to the cpuinfo library.
-%endif
-
-%if %{with python}
-%package -n	python-cpuinfo
-Summary:	Python bindings for cpuinfo
-Group:		Development/Perl
-License:	GPLv2+
-
-%description -n python-cpuinfo
-Provides a Python API to the cpuinfo library.
-%endif
+%description devel
+This package contains the developement libraries and headers
+for cpuinfo.
 
 %prep
-%setup -q
+%autosetup -p1 -n %{name}-%{commit0}
+
+# Patch the version patch
+sed -i -e 's@cpuinfo_VERSION 23.11.04@cpuinfo_VERSION %{version}@' CMakeLists.txt
 
 %build
-%configure \
-	--enable-shared \
-%if %{with perl}
-	--enable-perl=vendor \
+%cmake \
+%if %{with check}
+    -DCPUINFO_BUILD_UNIT_TESTS=ON \
+%else
+    -DCPUINFO_BUILD_UNIT_TESTS=OFF \
 %endif
-%if %{with python}
-	--enable-python \
-%endif
-	--install-sdk
-sed -i 's|python setup.py|%{__python2} setup.py|g' Makefile
+    -DCPUINFO_BUILD_MOCK_TESTS=OFF \
+    -DCPUINFO_BUILD_BENCHMARKS=OFF
 
-LDFLAGS="%{ldflags}" %make
+%cmake_build
 
 %install
-%makeinstall_std
+%cmake_install
 
-mkdir %{buildroot}/%{_lib}
-mv %{buildroot}%{_libdir}/libcpuinfo.so.%{major}* %{buildroot}/%{_lib}
-ln -srf %{buildroot}/%{_lib}/libcpuinfo.so.%{major}.*.* %{buildroot}%{_libdir}/libcpuinfo.so
+%if %{with check}
+rm -rf %{buildroot}/%{_includedir}/gmock
+rm -rf %{buildroot}/%{_includedir}/gtest
+rm -rf %{buildroot}/%{_libdir}/cmake/GTest
+rm -rf %{buildroot}/%{_libdir}/libgmock*
+rm -rf %{buildroot}/%{_libdir}/libgtest*
+rm -rf %{buildroot}/%{_libdir}/pkgconfig/gmock*
+rm -rf %{buildroot}/%{_libdir}/pkgconfig/gtest*
+%endif
 
-# nuke unpackaged files
-find %{buildroot} -name cpuinfo.pl -exec rm -f {} \;
+%check
+%if %{with check}
+%ctest
+%endif
 
 %files
-%doc README NEWS
-%{_bindir}/cpuinfo
-
-%files -n %{libname}
-/%{_lib}/libcpuinfo.so.%{major}*
-
-%files -n %{devname}
-%{_includedir}/cpuinfo.h
-%{_libdir}/pkgconfig/libcpuinfo.pc
-%{_libdir}/libcpuinfo.so
-
-%files -n %{static}
-%{_libdir}/libcpuinfo.a
-
-%if %{with perl}
-%files -n perl-Cpuinfo
-%doc src/bindings/perl/cpuinfo.pl
-%{perl_vendorarch}/Cpuinfo.pm
-%dir %{perl_vendorarch}/auto/Cpuinfo
-%{perl_vendorarch}/auto/Cpuinfo/*
+%license LICENSE
+%{_bindir}/isa-info
+%{_bindir}/cpu-info
+%{_bindir}/cache-info
+%ifarch x86_64
+%{_bindir}/cpuid-dump
 %endif
+%{_libdir}/lib%{name}.so.*
 
-%if %{with python}
-%files -n python-cpuinfo
-%{python2_sitearch}/CPUInfo.so
-%dir %{python2_sitearch}/pycpuinfo-*.egg-info/
-%{python2_sitearch}/pycpuinfo-*.egg-info/*
-%endif
-
+%files devel
+%doc README.md
+%dir %{_datadir}/%{name}
+%{_includedir}/%{name}.h
+%{_datadir}/%{name}/%{name}-*.cmake
+%{_libdir}/lib%{name}*.so
+%{_libdir}/pkgconfig/lib%{name}.pc
