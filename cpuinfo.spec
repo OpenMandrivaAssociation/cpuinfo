@@ -5,7 +5,7 @@ Summary:        A library to detect information about host CPU
 Name:           cpuinfo
 License:        BSD-2-Clause
 # fromg it 2025 06 26
-Version:        25.06.26
+Version:        877328f_20250905
 Release:        1
 URL:            https://github.com/pytorch/%{name}
 Source0:        https://github.com/pytorch/cpuinfo/archive/refs/heads/cpuinfo-main.zip
